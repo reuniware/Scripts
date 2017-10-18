@@ -1,2 +1,2 @@
-# VBA
-VBA for Excel scripts
+Various scripts for helping you :)
+
