@@ -4,6 +4,10 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 // https://ichimoku-expert.blogspot.com
 
+// C:\Program Files (x86)\Microsoft Visual Studio\Shared\Visual Studio Tools for Office\PIA\Office15\Microsoft.Office.Interop.Excel.dll
+// Version : 15.0.0.0
+// Version Runtime : v2.0.50727
+
 namespace CopyBetweenWorkbooks
 {
     public partial class Form1 : Form
