@@ -17,28 +17,31 @@ namespace LiveProcMon
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
+            stopMonitoring = true;
         }
 
         private static List<string> lstProcesses = new List<string>();
         private static bool firstRunDone = false;
+        private static Process[] processes = null;
+        private static bool stopMonitoring = false;
         private static void myThread()
         {
-            while (true)
+            while (stopMonitoring == false)
             {
                 if (firstRunDone == false)
                 {
-                    Process[] processes = Process.GetProcesses();
+                    processes = Process.GetProcesses();
                     foreach (Process p in processes)
                     {
                         string processData = p.ProcessName + "#" + p.Id;
                         lstProcesses.Add(processData);
-                        Console.WriteLine(processData);
+                        Console.WriteLine(DateTime.Now.ToString() + " : Initial process = " + processData);
                     }
                     firstRunDone = true;
                 }
                 else
                 {
-                    Process[] processes = Process.GetProcesses();
+                    processes = Process.GetProcesses();
                     // pour chaque process sauvegardé, rechercher s'il existe toujours en mémoire
                     foreach(string processData in lstProcesses)
                     {
