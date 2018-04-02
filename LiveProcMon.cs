@@ -1,3 +1,8 @@
+/**
+Live monitoring of initial processes, new processes and closing processes.
+Ability to kill any new process (apart "cmd.exe") if killNewProcess variable is set to true.
+*/
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,6 +29,14 @@ namespace LiveProcMon
         private static bool firstRunDone = false;
         private static Process[] processes = null;
         private static bool stopMonitoring = false;
+        private static string processData = "";
+        private static string[] tab = null;
+        private static string name = "";
+        private static int id = -1;
+        private static bool found = false;
+        private static bool killNewProcess = false; // Force killing of any new process (apart "cmd") ; a shortcut to cmd 
+                                                    // should be created on the desktop prior to launching this app
+
         private static void myThread()
         {
             while (stopMonitoring == false)
@@ -33,7 +46,7 @@ namespace LiveProcMon
                     processes = Process.GetProcesses();
                     foreach (Process p in processes)
                     {
-                        string processData = p.ProcessName + "#" + p.Id;
+                        processData = p.ProcessName + "#" + p.Id;
                         lstProcesses.Add(processData);
                         Console.WriteLine(DateTime.Now.ToString() + " : Initial process = " + processData);
                     }
@@ -45,10 +58,10 @@ namespace LiveProcMon
                     // pour chaque process sauvegardé, rechercher s'il existe toujours en mémoire
                     foreach(string processData in lstProcesses)
                     {
-                        string[] tab = processData.Split('#');
-                        string name = tab[0];
-                        int id = int.Parse(tab[1]);
-                        bool found = false;
+                        tab = processData.Split('#');
+                        name = tab[0];
+                        id = int.Parse(tab[1]);
+                        found = false;
                         foreach(Process p in processes)
                         {
                             if (p.ProcessName.Equals(name) && (p.Id == id))
@@ -68,11 +81,25 @@ namespace LiveProcMon
                     // pour chaque process en mémoire, rechercher s'il existe dans la liste des process sauvegardés
                     foreach (Process p in processes)
                     {
-                        string processData = p.ProcessName + "#" + p.Id;
+                        processData = p.ProcessName + "#" + p.Id;
                         if (!lstProcesses.Contains(processData))
                         {
                             lstProcesses.Add(processData);
                             Console.WriteLine(DateTime.Now.ToString() + " : New process detected = " + processData);
+                            if (killNewProcess == true)
+                            {
+                                if (!p.ProcessName.ToLower().Trim().Equals(""))
+                                {
+                                    try
+                                    {
+                                        p.Kill();
+                                    }
+                                    catch (Exception)
+                                    {
+
+                                    }
+                                }
+                            }
                         }
                     }
                 }
