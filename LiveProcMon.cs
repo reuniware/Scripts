@@ -1,8 +1,3 @@
-/**
-Live monitoring of initial processes, new processes and closing processes.
-Ability to kill any new process (apart "cmd.exe") if killNewProcess variable is set to true.
-*/
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -88,7 +83,7 @@ namespace LiveProcMon
                             Console.WriteLine(DateTime.Now.ToString() + " : New process detected = " + processData);
                             if (killNewProcess == true)
                             {
-                                if (!p.ProcessName.ToLower().Trim().Equals(""))
+                                if (!p.ProcessName.ToLower().Trim().Equals("cmd"))
                                 {
                                     try
                                     {
