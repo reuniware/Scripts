@@ -30,25 +30,52 @@ namespace LiveProcMon
                     Process[] processes = Process.GetProcesses();
                     foreach (Process p in processes)
                     {
-                        lstProcesses.Add(p.ProcessName);
-                        //Console.WriteLine(p.ProcessName);
+                        string processData = p.ProcessName + "#" + p.Id;
+                        lstProcesses.Add(processData);
+                        Console.WriteLine(processData);
                     }
                     firstRunDone = true;
                 }
                 else
                 {
                     Process[] processes = Process.GetProcesses();
+                    // pour chaque process sauvegardé, rechercher s'il existe toujours en mémoire
+                    foreach(string processData in lstProcesses)
+                    {
+                        string[] tab = processData.Split('#');
+                        string name = tab[0];
+                        int id = int.Parse(tab[1]);
+                        bool found = false;
+                        foreach(Process p in processes)
+                        {
+                            if (p.ProcessName.Equals(name) && (p.Id == id))
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found == false)
+                        {
+                            Console.WriteLine(DateTime.Now.ToString() + " : Process not in memory anymore = " + processData);
+                            lstProcesses.Remove(processData);
+                            break;
+                        }
+                    }
+
+                    // pour chaque process en mémoire, rechercher s'il existe dans la liste des process sauvegardés
                     foreach (Process p in processes)
                     {
-                        if (!lstProcesses.Contains(p.ProcessName))
+                        string processData = p.ProcessName + "#" + p.Id;
+                        if (!lstProcesses.Contains(processData))
                         {
-                            lstProcesses.Add(p.ProcessName);
-                            Console.WriteLine(DateTime.Now.ToString() + " : New process detected = " + p.ProcessName);
+                            lstProcesses.Add(processData);
+                            Console.WriteLine(DateTime.Now.ToString() + " : New process detected = " + processData);
                         }
                     }
                 }
+                Thread.Sleep(250);
             }
-
         }
     }
+
 }
