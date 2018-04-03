@@ -83,7 +83,7 @@ namespace LiveProcMon
                             Console.WriteLine(DateTime.Now.ToString() + " : New process detected = " + processData);
                             if (killNewProcess == true)
                             {
-                                if (!p.ProcessName.ToLower().Trim().Equals("cmd"))
+                                if (!p.ProcessName.ToLower().Trim().Equals("cmd") && !p.ProcessName.ToLower().Trim().Equals("conhost"))
                                 {
                                     try
                                     {
